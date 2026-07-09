@@ -9,7 +9,7 @@ import { sendWelcomeEmail, sendPasswordResetEmail } from '../services/emailServi
 
 const router = express.Router();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_jwt_secret_key_12345';
+const getJwtSecret = () => process.env.JWT_SECRET || 'fallback_jwt_secret_key_12345';
 
 // Helper to generate 6-character invite code
 function generateInviteCode() {
@@ -27,7 +27,7 @@ router.post('/signup', async (req, res) => {
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ message: 'User with this email already exists' });
     }
@@ -88,7 +88,7 @@ router.post('/signup', async (req, res) => {
     await sendWelcomeEmail(newUser, resolvedCompanyName);
 
     // Generate JWT
-    const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: newUser._id }, getJwtSecret(), { expiresIn: '1d' });
 
     res.status(201).json({
       token,
@@ -116,7 +116,7 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -126,7 +126,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id }, getJwtSecret(), { expiresIn: '1d' });
 
     res.json({
       token,
@@ -169,7 +169,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       // Return 200 even if user doesn't exist for security
       return res.json({ message: 'If an account exists with that email, a password reset link has been sent.' });

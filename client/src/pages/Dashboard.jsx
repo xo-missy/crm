@@ -15,7 +15,7 @@ const TICKET_COLORS = {
 };
 
 export default function Dashboard() {
-  const { apiCall, user } = useAuth();
+  const { apiCall, user, currency, formatCurrency } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -102,7 +102,7 @@ export default function Dashboard() {
                 <div>
                   <div className="card-title">Pipeline Value</div>
                   <div className="card-value">
-                    ${summaryCards.totalDealsValue.toLocaleString(undefined, { minimumFractionDigits: 0 })}
+                    {formatCurrency(summaryCards.totalDealsValue)}
                   </div>
                 </div>
                 <div className="card-icon" style={{ backgroundColor: '#ecfdf5', color: '#10b981' }}>
@@ -154,8 +154,8 @@ export default function Dashboard() {
                 <BarChart data={pipelineByStage} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="stage" tickLine={false} axisLine={false} style={{ fontSize: '0.75rem', fill: '#64748b' }} />
-                  <YAxis tickLine={false} axisLine={false} style={{ fontSize: '0.75rem', fill: '#64748b' }} tickFormatter={val => `$${val}`} />
-                  <Tooltip formatter={value => [`$${value.toLocaleString()}`, 'Value']} contentStyle={{ borderRadius: '0.5rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }} />
+                  <YAxis tickLine={false} axisLine={false} style={{ fontSize: '0.75rem', fill: '#64748b' }} tickFormatter={val => currency === 'NGN' ? `₦${Math.round(val * 1600).toLocaleString()}` : `$${val.toLocaleString()}`} />
+                  <Tooltip formatter={value => [formatCurrency(value), 'Value']} contentStyle={{ borderRadius: '0.5rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }} />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {pipelineByStage.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -190,18 +190,18 @@ export default function Dashboard() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={value => [`$${value.toLocaleString()}`, 'Value']} />
+                    <Tooltip formatter={value => [formatCurrency(value), 'Value']} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block' }}></span>
-                  <span>Won: <strong>${wonLostDeals.wonValue.toLocaleString()}</strong> ({wonLostDeals.won} deals)</span>
+                  <span>Won: <strong>{formatCurrency(wonLostDeals.wonValue)}</strong> ({wonLostDeals.won} deals)</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }}></span>
-                  <span>Lost: <strong>${wonLostDeals.lostValue.toLocaleString()}</strong> ({wonLostDeals.lost} deals)</span>
+                  <span>Lost: <strong>{formatCurrency(wonLostDeals.lostValue)}</strong> ({wonLostDeals.lost} deals)</span>
                 </div>
               </div>
             </div>
@@ -278,7 +278,7 @@ export default function Dashboard() {
                       <tr key={idx}>
                         <td style={{ fontWeight: 600 }}>{rep.name}</td>
                         <td className="text-right" style={{ color: '#10b981', fontWeight: 700 }}>
-                          ${rep.value.toLocaleString()}
+                          {formatCurrency(rep.value)}
                         </td>
                       </tr>
                     ))}

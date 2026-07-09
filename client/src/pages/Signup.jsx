@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Signup() {
   const { signup } = useAuth();
@@ -13,6 +14,7 @@ export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [companyName, setCompanyName] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [role, setRole] = useState('Sales Rep'); // Defaults to Sales Rep for joining
@@ -127,16 +129,40 @@ export default function Signup() {
 
           <div className="form-group">
             <label className="form-label" htmlFor="signup-password">Password</label>
-            <input
-              type="password"
-              id="signup-password"
-              className="form-control"
-              placeholder="••••••••"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              disabled={loading}
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="signup-password"
+                className="form-control"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                disabled={loading}
+                required
+                style={{ paddingRight: '2.5rem' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(prev => !prev)}
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#64748b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.25rem',
+                }}
+                id="signup-toggle-password"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
 
           {mode === 'create' ? (

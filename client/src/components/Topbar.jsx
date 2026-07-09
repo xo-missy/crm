@@ -4,7 +4,7 @@ import { FaBell, FaBars, FaSignOutAlt, FaCog, FaCheck } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Topbar({ toggleSidebar }) {
-  const { user, logout, notifications, markNotificationRead, markAllNotificationsRead } = useAuth();
+  const { user, logout, notifications, markNotificationRead, markAllNotificationsRead, currency, setCurrency } = useAuth();
   const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -75,6 +75,32 @@ export default function Topbar({ toggleSidebar }) {
       </div>
 
       <div className="topbar-actions">
+        {/* Currency Selector Switcher */}
+        <div className="flex-center" style={{ gap: '0.25rem' }}>
+          <select
+            value={currency}
+            onChange={e => setCurrency(e.target.value)}
+            className="form-control"
+            style={{
+              width: '90px',
+              padding: '0.375rem 0.5rem',
+              fontSize: '0.775rem',
+              height: 'auto',
+              border: '1px solid #cbd5e1',
+              borderRadius: '0.375rem',
+              cursor: 'pointer',
+              backgroundColor: '#fff',
+              color: '#334155',
+              fontWeight: 600,
+            }}
+            id="currency-selector"
+            aria-label="Select currency mode"
+          >
+            <option value="NGN">₦ NGN</option>
+            <option value="USD">$ USD</option>
+          </select>
+        </div>
+
         {/* Notification Bell Dropdown */}
         <div className="notification-bell-container" ref={notifDropdownRef}>
           <button 

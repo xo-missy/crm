@@ -6,7 +6,7 @@ import { FaPlus, FaCalendarAlt, FaUser, FaDollarSign, FaTrash, FaPen, FaBriefcas
 const STAGES = ['Lead', 'Contacted', 'Proposal', 'Negotiation', 'Won', 'Lost'];
 
 export default function Pipeline() {
-  const { apiCall, user } = useAuth();
+  const { apiCall, user, currency, formatCurrency, toDisplayValue, toDatabaseValue } = useAuth();
   
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -129,7 +129,7 @@ export default function Pipeline() {
 
     setFormData({
       title: deal.title,
-      value: deal.value,
+      value: toDisplayValue(deal.value),
       stage: deal.stage,
       contactId: deal.contactId ? (deal.contactId._id || deal.contactId) : '',
       ownerId: deal.ownerId ? (deal.ownerId._id || deal.ownerId) : user.id,
@@ -156,7 +156,7 @@ export default function Pipeline() {
 
     const body = {
       title: formData.title,
-      value: valueNumber,
+      value: toDatabaseValue(valueNumber),
       stage: formData.stage,
       contactId: formData.contactId,
       ownerId: formData.ownerId,
@@ -233,7 +233,7 @@ export default function Pipeline() {
                 <div className="kanban-column-header">
                   <span>{stage} ({dealsInStage.length})</span>
                   <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                    ${totalStageValue.toLocaleString()}
+                    {formatCurrency(totalStageValue)}
                   </span>
                 </div>
 
@@ -282,7 +282,7 @@ export default function Pipeline() {
                                   }}
                                 >
                                   <div className="kanban-card-title">{deal.title}</div>
-                                  <div className="kanban-card-value">${deal.value.toLocaleString()}</div>
+                                  <div className="kanban-card-value">{formatCurrency(deal.value)}</div>
                                   
                                   <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                                     <FaBriefcase style={{ color: '#94a3b8', fontSize: '0.65rem' }} />
@@ -348,12 +348,12 @@ export default function Pipeline() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="deal-value">Deal Value ($)</label>
+                  <label className="form-label" htmlFor="deal-value">Deal Value ({currency === 'NGN' ? '₦' : '$'})</label>
                   <input
                     type="number"
                     id="deal-value"
                     className="form-control"
-                    placeholder="15000"
+                    placeholder={currency === 'NGN' ? '24000000' : '15000'}
                     value={formData.value}
                     onChange={e => setFormData({ ...formData, value: e.target.value })}
                     min="0"

@@ -315,8 +315,10 @@ export default function Contacts() {
 
           <ul className="pane-list">
             {contacts.length === 0 ? (
-              <div style={{ padding: '2rem', textAlignment: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>
-                No contacts found matching search filters.
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>
+                {search || selectedTag 
+                  ? "No contacts found matching filters." 
+                  : "No contacts in this workspace yet."}
               </div>
             ) : (
               contacts.map(contact => (
@@ -512,9 +514,18 @@ export default function Contacts() {
 
             </React.Fragment>
           ) : (
-            <div className="flex-center" style={{ flex: 1, flexDirection: 'column', color: '#94a3b8' }}>
+            <div className="flex-center" style={{ flex: 1, flexDirection: 'column', color: '#94a3b8', padding: '2rem', textAlign: 'center' }}>
               <FaUsers style={{ fontSize: '3rem', marginBottom: '1rem' }} />
-              <p>Select a contact to view their relationship pipeline, notes history, and AI insights.</p>
+              {contacts.length === 0 ? (
+                <React.Fragment>
+                  <p style={{ fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>No contacts in this workspace yet</p>
+                  <p style={{ fontSize: '0.85rem', maxWidth: '320px', margin: '0 auto', lineHeight: 1.5 }}>
+                    Click the <strong>Add Contact</strong> button in the top right to create your first contact and start tracking pipeline deals, notes, and AI insights.
+                  </p>
+                </React.Fragment>
+              ) : (
+                <p>Select a contact from the list to view their relationship pipeline, notes history, and AI insights.</p>
+              )}
             </div>
           )}
         </div>

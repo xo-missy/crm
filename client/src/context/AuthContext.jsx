@@ -11,7 +11,37 @@ export default function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('crm_token'));
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
+  const [currency, setCurrencyState] = useState(localStorage.getItem('crm_currency') || 'NGN');
   const pollTimerRef = useRef(null);
+
+  const exchangeRate = 1600; // 1 USD = 1600 NGN
+
+  function setCurrency(newCurrency) {
+    localStorage.setItem('crm_currency', newCurrency);
+    setCurrencyState(newCurrency);
+  }
+
+  function formatCurrency(val) {
+    if (currency === 'NGN') {
+      return '₦' + Math.round(val * exchangeRate).toLocaleString();
+    }
+    return '$' + Math.round(val).toLocaleString();
+  }
+
+  function toDisplayValue(val) {
+    if (val === undefined || val === null || val === '') return '';
+    if (currency === 'NGN') {
+      return Math.round(val * exchangeRate);
+    }
+    return Math.round(val);
+  }
+
+  function toDatabaseValue(val) {
+    if (currency === 'NGN') {
+      return val / exchangeRate;
+    }
+    return val;
+  }
 
   // Helper to store/remove token
   function handleTokenChange(newToken) {
@@ -191,6 +221,11 @@ export default function AuthProvider({ children }) {
     fetchNotifications,
     markNotificationRead,
     markAllNotificationsRead,
+    currency,
+    setCurrency,
+    formatCurrency,
+    toDisplayValue,
+    toDatabaseValue,
   };
 
   return (

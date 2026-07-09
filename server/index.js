@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -12,9 +12,6 @@ import companyRoutes from './routes/company.js';
 import notificationRoutes from './routes/notifications.js';
 import aiRoutes from './routes/ai.js';
 import dashboardRoutes from './routes/dashboard.js';
-
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;

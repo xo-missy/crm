@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -7,6 +8,8 @@ export default function ResetPassword() {
   
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -75,8 +78,9 @@ export default function ResetPassword() {
           <form onSubmit={handleSubmit} id="reset-password-form">
             <div className="form-group">
               <label className="form-label" htmlFor="reset-new-password">New Password</label>
+            <div style={{ position: 'relative' }}>
               <input
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 id="reset-new-password"
                 className="form-control"
                 placeholder="••••••••"
@@ -84,13 +88,37 @@ export default function ResetPassword() {
                 onChange={e => setNewPassword(e.target.value)}
                 disabled={loading}
                 required
+                style={{ paddingRight: '2.5rem' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(prev => !prev)}
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#64748b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.25rem',
+                }}
+                id="reset-toggle-new-password"
+                aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+              >
+                {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
+          </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="reset-confirm-password">Confirm Password</label>
+          <div className="form-group">
+            <label className="form-label" htmlFor="reset-confirm-password">Confirm Password</label>
+            <div style={{ position: 'relative' }}>
               <input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 id="reset-confirm-password"
                 className="form-control"
                 placeholder="••••••••"
@@ -98,7 +126,30 @@ export default function ResetPassword() {
                 onChange={e => setConfirmPassword(e.target.value)}
                 disabled={loading}
                 required
+                style={{ paddingRight: '2.5rem' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(prev => !prev)}
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#64748b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.25rem',
+                }}
+                id="reset-toggle-confirm-password"
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             </div>
 
             <button
