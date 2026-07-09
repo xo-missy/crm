@@ -73,7 +73,8 @@ export default function AuthProvider({ children }) {
     };
 
     try {
-      const response = await fetch(endpoint, config);
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${baseUrl}${endpoint}`, config);
       const data = await response.json();
 
       if (!response.ok) {
